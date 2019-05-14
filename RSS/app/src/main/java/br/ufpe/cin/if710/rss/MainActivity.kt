@@ -3,6 +3,7 @@ package br.ufpe.cin.if710.rss
 import android.app.Activity
 import android.os.Bundle
 import android.widget.TextView
+import org.jetbrains.anko.doAsync
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
@@ -32,14 +33,14 @@ class MainActivity : Activity() {
 
     override fun onStart() {
         super.onStart()
-        try {
-            //Esse código dá pau, por fazer operação de rede na thread principal...
-            val feedXML = getRssFeed(RSS_FEED)
-            conteudoRSS!!.text = feedXML
-        } catch (e: IOException) {
-            e.printStackTrace()
+        doAsync {
+            try {
+                val feedXML = getRssFeed(RSS_FEED)
+                conteudoRSS!!.text = feedXML
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
         }
-
     }
 
     //Opcional - pesquise outros meios de obter arquivos da internet - bibliotecas, etc.
