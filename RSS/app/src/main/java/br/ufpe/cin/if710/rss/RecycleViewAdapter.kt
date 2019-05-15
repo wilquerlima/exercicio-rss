@@ -1,6 +1,10 @@
 package br.ufpe.cin.if710.rss
 
 import android.content.Context
+import android.content.Intent
+import android.content.Intent.*
+import android.net.Uri
+import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +26,12 @@ class RecycleViewAdapter(var listItens:List<ItemRSS>, val ctx : Context)
         val item = listItens[position]
         holder.titulo.text = item.title
         holder.data.text = item.pubDate
+
+        holder.titulo.setOnClickListener {
+            val i = Intent(ACTION_VIEW)
+            i.data = Uri.parse(item.link)
+            ctx.startActivity(i)
+        }
     }
 
     //class de viewholder para definir os elementos que estarão presentes
