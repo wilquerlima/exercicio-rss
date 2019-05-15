@@ -2,8 +2,12 @@ package br.ufpe.cin.if710.rss
 
 import android.app.Activity
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.widget.ListView
 import android.widget.TextView
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
@@ -23,20 +27,34 @@ class MainActivity : Activity() {
     //http://pox.globo.com/rss/g1/tecnologia/
 
     //use ListView ao invés de TextView - deixe o atributo com o mesmo nome
-    private var conteudoRSS: TextView? = null
+    private var recycleView: RecyclerView? = null
+    private var adapterRecycleView: RecycleViewAdapter = RecycleViewAdapter(emptyList(), this@MainActivity)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        conteudoRSS = findViewById(R.id.conteudoRSS)
+        recycleView = findViewById(R.id.conteudoRSS)
+
+        //configurando as propriedades da recyclerview informando o seu
+        // respectivo layout manager e adapter
+        recycleView?.layoutManager = LinearLayoutManager(applicationContext)
+        recycleView?.adapter = adapterRecycleView
     }
 
     override fun onStart() {
         super.onStart()
+        //doAsync para realizar downloads fora da main thread
         doAsync {
             try {
                 val feedXML = getRssFeed(RSS_FEED)
-                conteudoRSS!!.text = feedXML
+                val listParser = ParserRSS.parse(feedXML)
+
+                //é preciso rodar o notify dentro da uithread pq apenas ela pode alterar a view
+                uiThread {
+                    adapterRecycleView.listItens = listParser
+                    //notificar o adapter que foi alterado os seus elementos
+                    adapterRecycleView.notifyDataSetChanged()
+                }
             } catch (e: IOException) {
                 e.printStackTrace()
             }
@@ -54,8 +72,10 @@ class MainActivity : Activity() {
             ipt = conn.inputStream
             val out = ByteArrayOutputStream()
             val buffer = ByteArray(1024)
-            while (ipt!!.read(buffer) != -1) {
-                out.write(buffer, 0, ipt.read(buffer))
+            var count: Int = ipt.read(buffer)
+            while (count != -1) {
+                out.write(buffer, 0, count)
+                count = ipt.read(buffer)
             }
             val response = out.toByteArray()
             rssFeed = String(response, Charset.forName("UTF-8"))
