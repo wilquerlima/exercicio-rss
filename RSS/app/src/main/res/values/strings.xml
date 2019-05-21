@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">RSS</string>
     <string name="rssfeed">http://leopoldomt.com/if1001/g1brasil.xml</string>
+    <string name="title_edit_menu">Change URL</string>
+
+    <string-array name="linksRSS">
+        <item>http://leopoldomt.com/if1001/g1brasil.xml</item>
+        <item>http://rss.cnn.com/rss/edition.rss</item>
+        <item>http://pox.globo.com/rss/g1/brasil/</item>
+        <item>http://pox.globo.com/rss/g1/ciencia-e-saude/</item>
+        <item>http://pox.globo.com/rss/g1/tecnologia/</item>
+    </string-array>
 </resources>

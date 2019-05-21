@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:title="Selecione um RSS:">
+
+        <DropDownPreference
+            android:key="rssFeed"
+            android:title=""
+            android:entries="@array/linksRSS"
+            android:entryValues="@array/linksRSS"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>
